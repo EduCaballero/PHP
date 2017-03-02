@@ -18,7 +18,7 @@ function desconectar ($conexion){
 //-----------------------------------------------------------------
 
 // Función que conecta con BBDD
-// Inserta un Pokemon con los valores que recibe como parámetros
+// Inserta un Entrenador con los valores que recibe como parámetros
 // Cierra conexión con la bbdd
 function insertarEntrenador($name, $pokeball, $potion) {
     // Conectamos a la bbdd, si no conecta interrumpe el programa
@@ -44,11 +44,193 @@ function insertarEntrenador($name, $pokeball, $potion) {
 // Función que devuelve los nombres de todos los entrenadores
 function selectNombresEntrenadores() {
     $con = conectar("stukemon");
-    $query = "select name from trainer"
-            . ";";
+    $query = "select name from trainer";
     $resultado = mysqli_query($con, $query);
     desconectar($con);
     return $resultado;
 }
 
 //------------------------------------------------------------------
+
+// Función que devuelve el nombre de los entrenadores con menos de 6 pokemons
+function entrenadoresMenos6Pokemon() {
+    $con = conectar("stukemon");
+    $select = "select trainer.name, count(*) as cont from trainer left join pokemon on trainer.name = trainer group by trainer having cont<6;";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------
+
+// Función que inserta un pokemon en la bbdd
+function insertarPokemon($nombre, $tipo, $habilidad, $ataque, $defensa, $velocidad, $vida, $nivel, $entrenador) {
+    $con = conectar("stukemon");
+    $insert = "insert into pokemon values ('$nombre', '$tipo', '$habilidad', '$ataque', '$defensa', '$velocidad', '$vida', '$nivel', '$entrenador')";
+    // Ejecutamos la consulta
+    if (mysqli_query($con, $insert)) {
+        // Si ha ido bien
+        echo "Pokemon dado de alta.";
+    } else {
+        // Sino mostramos el error
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+//-------------------------------------------------------------------
+
+// Función que devuelve los nombres de los entrenadores que tengan como mínimo 1 pokemon
+function entrenadorMin1Pokemon() {
+    $con = conectar("stukemon");
+    $select = "select trainer.name, count(*) as cont from trainer right join pokemon on trainer.name = trainer group by trainer having cont>0;";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//-------------------------------------------------------------------
+
+// Funciones para devolver el pokemon del entrenador 1 y el 2 respectivamente
+//Entrenador 1
+function pokemonEntrenador1($entrenador1) {
+    $con = conectar("stukemon");
+    $select = "select * from pokemon where trainer='$entrenador1'";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//Entrenador 2
+function pokemonEntrenador2($entrenador2) {
+    $con = conectar("stukemon");
+    $select = "select * from pokemon where trainer='$entrenador2'";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//---------------------------------------------------------------------
+
+// Función que devuelve datos del del pokemon del entrenador1 para realizar el ataque
+function pokemonEnt1Ataque($pokemon) {
+    $con = conectar("stukemon");
+    $select = "select attack+2*level as ataque1, life as vida1 from pokemon where name='$pokemon'";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+// Función que devuelve datos del del pokemon del entrenador2 para realizar el ataque
+function pokemonEnt2Ataque($pokemon) {
+    $con = conectar("stukemon");
+    $select = "select attack+2*level as ataque2,life as vida2 from pokemon where name='$pokemon'";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+// Función que devuelve los datos del Pokemon
+function datosPokemon($pokemon) {
+    $con = conectar("stukemon");
+    $select = "select * from pokemon where name='$pokemon'";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+//Funciones para actualizar la vida de los Pokemon tras la batalla en la BBDD
+
+//Pokemon 1
+function resultadoVidaPokemon1($resul2, $pokemon1) {
+    $con = conectar("stukemon");
+    $update = "update pokemon set life='$resul2' where name='$pokemon1'";
+    if (mysqli_query($con, $update)) {
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+//Pokemon 2
+function resultadoVidaPokemon2($resul1, $pokemon2) {
+    $con = conectar("stukemon");
+    $update = "update pokemon set life='$resul1' where name='$pokemon2'";
+    if (mysqli_query($con, $update)) {
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+//------------------------------------------------------------------------------
+
+// Función para cambiar los datos del resultado de la batalla en la BBDD
+function datosResultadoBatalla($pokemon1, $pokemon2, $ganador) {
+    $con = conectar("stukemon");
+    $select = "insert into battle(pokemon1, pokemon2, winner) values ('$pokemon1', '$pokemon2', '$ganador')";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//---------------------------------------------------------------------
+
+//Función para subir un nivel al ganador
+function nivelGanadorUP($ganador) {
+    $con = conectar("stukemon");
+    $update = "update pokemon set level=level+1 where name='$ganador'";
+    if (mysqli_query($con, $update)) {
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+//----------------------------------------------------------------------
+
+//Funciones para repartir la experiencia a los pokemons combatientes
+
+//1 punto al entrenador perdedor
+function expPerdedor($entrenadorPerdedor) {
+    $con = conectar("stukemon");
+    $update = "update trainer set points=points+1 where name='$entrenadorPerdedor'";
+    if (mysqli_query($con, $update)) {
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+//10 puntos al entrenador ganador
+function expGanador($entrenadorGanador) {
+    $con = conectar("stukemon");
+    $update = "update trainer set points=points+10 where name='$entrenadorGanador'";
+    if (mysqli_query($con, $update)) {
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+//--------------------------------------------------------------------------

@@ -6,23 +6,26 @@
     <body>
 
         <?php
+        // Necesitamos incluir el fichero bbdd.php
+        require_once('bbddStukemon.php');
+        
         if (isset($_POST["enviar"])) {
             // Recibimos los datos del formulario (POST)
-            $name = $_POST["name"];
-            $birth = $_POST["birth"];
-            $nbaskets = $_POST["nbaskets"];
-            $nassists = $_POST["nassists"];
-            $nrebounds = $_POST["nrebounds"];
-            $position = $_POST["position"];
-            $team = $_POST["team"];            
+            $nombre = $_POST['name'];
+            $tipo = $_POST['type'];
+            $habilidad = $_POST['ability'];
+            $ataque = $_POST['atack'];
+            $defensa = $_POST['defense'];
+            $velocidad = $_POST['speed'];
+            $vida = $_POST['life'];
+            $nivel = $_POST['level'];
+            $entrenador = $_POST['entrenador'];
 
-            // Necesitamos incluir el fichero bbdd.php
-            require_once('bbdd.php');
             // Insertamos datos en la bbdd
-            insertarJugador($name, $birth, $nbaskets, $nassists, $nrebounds, $position, $team);
-        } else { //nombre , tipo (agua, fuego, et c…) ,
+            insertarPokemon($nombre, $tipo, $habilidad, $ataque, $defensa, $velocidad, $vida, $nivel, $entrenador);
+        } else { //nombre , tipo (agua, fuego, etc…) ,
                 //habilidad, nivel de ataque , nivel de de fensa, velocidad y vida.
-            echo ' 
+            echo '
         <form action = "" method = "POST">
         Nombre: <input type = "text" name = "name" required><br>
         Tipo: <select name="type">
@@ -34,22 +37,24 @@
         Habilidad: <input type = "text" name = "ability" required><br>
         Nivel de ataque: <input type = "number" name = "atack" min="0" required><br>
         Nivel de defensa: <input type = "number" name = "defense" min="0" required><br>
-        Velocidad: <input type = "number" name = "velocity" min="0" required><br>
-        Vida: <input type = "number" name = "life" min="0" required><br>
-        Selecciona el jugador a modificar: <select name="belong">
-        // Leemos los nombres de la bbdd
-        $names = selectNombresJugadores();
-        // Vamos extrayendo los nombres y añadiendolos a la lista
-        while ($fila=  mysqli_fetch_array($names)) {
+        Velocidad: <input type = "number" name = "speed" min="0" required><br>
+        Vida: <input type = "number" name = "life" min="0" required><br>';
+        echo'Selecciona el entrenador al que pertenece:<select name="entrenador">';       
+        $entrenadores = entrenadoresMenos6Pokemon();
+        while ($fila = mysqli_fetch_array($entrenadores)) {
         extract($fila);
-        <option value="$name">$name</option>        
-        </select>
-        <input type = "submit" name = "enviar" value = "Alta"><br>
-        </form>';
+        echo "<option value='$name'>$name";
+        echo '</option>';
         }
-        ?>
+        echo '</select><br>';
+        echo '<input type="hidden" name="level" value="0" required>';
+        echo'<input type = "submit" name = "enviar" value = "Alta">';
+        echo'</form>';
+        }
+        ?>  
+        
         <form action="index.php" method="POST">
-            <input type="submit" value="VOLVER">
+            <input type="submit" value="Volver">
         </form>
 
     </body>
