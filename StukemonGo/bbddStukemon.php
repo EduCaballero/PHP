@@ -234,3 +234,148 @@ function expGanador($entrenadorGanador) {
 }
 
 //--------------------------------------------------------------------------
+
+// Función que nos retorna el nombre d elos entrenadores que tengan pociones (mínimo 1 (>0))
+function entrenadoresConPocion() {
+    $con = conectar("stukemon");
+    $select = "select name from trainer where name in (select trainer from pokemon) and potions >0;";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//-------------------------------------------------------------------------
+
+
+//Función para traer el nombre y la vida de TODOS los pokemon del entrenador seleccionado
+function todsPokemonsEntrenador($entrenador) {
+    $con = conectar("stukemon");
+    $select = "select name, life from pokemon where trainer = '$entrenador';";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//--------------------------------------------------------------------------
+
+// Funciones para devolver el pokemon del entrenador
+function pokemonEntrenador($entrenador) {
+    $con = conectar("stukemon");
+    $select = "select * from pokemon where trainer='$entrenador'";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+//Función que nos permitirá modificar (update y set) en un punto la vida de un Pokemon
+function modificarVida($pokemon) {
+    $con = conectar("stukemon");
+    $update = "update pokemon set life = life+1 where name = '$pokemon';";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $update);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+//Función para editar las pociones de un entrenador (restar la que hemos utilizado)
+function pocionesEntrenador($entrenador) {
+    $con = conectar("stukemon");
+    $update = "update trainer set potions = potions-1 where name = '$entrenador';";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $update);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+//Función que nos devuelve los puntos que tiene un entrenador
+function puntosEntrenador($entrenador) {
+    $con = conectar("stukemon");
+    $select = "select points from trainer where name = '$entrenador';";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+//Función para modificar las pociones del entrenador seleccionado
+function modificarPociones($pociones,$entrenador) {
+    $con = conectar("stukemon");
+    $select = "update trainer set potions = potions+$pociones where name = '$entrenador';";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+//Función para modificar las puntos del entrenador que ha comprado pociones
+function modificarPuntos($pociones,$entrenador) {
+    $con = conectar("stukemon");
+    $select = "update trainer set points = points-$pociones where name = '$entrenador';";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//------------------------------------------------------------------------------
+
+/*Con esta función llamamos a todos los datos de los pokemon en order descendente. copio y pego debajo 
+ * "ordenada de mayor a menor por nivel y puntos de vida. Es decir, ordenado primero por
+ *  nivel y en caso de empate por puntos de vida de mayor a menor"
+ */
+function todosPokemonOrdenDesc() {
+    $con = conectar("stukemon");
+    $select = "select * from pokemon order by level desc, life desc";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//-----------------------------------------------------------------------------
+
+//Función que nos devuelve todos los datos de los entrenadores, en orden descendente por los puntos
+function todosEntrenadoresPuntosDesc() {
+    $con = conectar("stukemon");
+    $select = "select * from trainer order by points desc";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
+
+//-------------------------------------------------------------------------
+
+//Función que nos devuelve los ganadores en orden descendente
+function ganadoresBatallas() {
+    $con = conectar("stukemon");
+    $select = "select winner, count(*) as ganado from battle group by winner order by ganado desc";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}
