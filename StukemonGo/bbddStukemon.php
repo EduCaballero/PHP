@@ -55,7 +55,7 @@ function selectNombresEntrenadores() {
 // Función que devuelve el nombre de los entrenadores con menos de 6 pokemons
 function entrenadoresMenos6Pokemon() {
     $con = conectar("stukemon");
-    $select = "select trainer.name, count(*) as cont from trainer left join pokemon on trainer.name = trainer group by trainer having cont<6;";
+    $select = "select trainer.name, count(*) as cont from trainer left join pokemon on trainer.name = trainer group by trainer.name having cont<6;";
     // Ejecutamos la consulta y recogemos el resultado
     $resultado = mysqli_query($con, $select);
     desconectar($con);
@@ -379,3 +379,21 @@ function ganadoresBatallas() {
     // devolvemos el resultado
     return $resultado;
 }
+
+
+/*
+//-------------------------Entrenadores con menos de 6 pokempn 
+
+select trainer.name from trainer left join pokemon on trainer.name = trainer group by trainer.name having count(*)<6;
+
+
+select name from trainer where name not in (select trainer from pokemon group by trainer having count(*)=6);
+
+//------------------------Entrenadores con al menos un pokemon
+ 
+ 
+select trainer.name, count(*) as cont from trainer right join pokemon on trainer.name = trainer group by trainer having cont>0;
+
+select distinct trainer from pokemon;
+ 
+ */
