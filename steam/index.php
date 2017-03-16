@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
+    CRUD con login
 -->
 <html>
     <head>
         <meta charset="UTF-8">
-        <title></title>
+        <title>StucomSteam</title>
     </head>
     <body>
-        <?php
-        // put your code here
-        ?>
+        <a href="registro.php">Registro</a>
     </body>
 </html>
