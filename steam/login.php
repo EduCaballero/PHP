@@ -26,9 +26,13 @@ Página de login
                 $_SESSION["user"]=$email; //le llamamos user pero le llamamos como nos de la gana
                 //Comprobamos el tipo de para dirigir al user
                 $tipo=  getTypeByEmail($email);
+                //Guardamos el tipo de usuario en la variable de sesión
+                $_SESSION["tipo"]= $tipo;
                 if($tipo=="user"){
                     //Dirigimos al usuario a su página
                     header("Location: home_user.php");
+                }else if($tipo=="admin"){
+                    header("Location: home_admin.php");
                 }
             }else{
                 echo"<p>Usuario o contraseña incorrectos.</p>";
