@@ -1,0 +1,11 @@
+body {
+  text-align: center;
+  background-image: url(img/Screen.png);
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center; 
+  background-size: 100%;
+  color: white
+}
