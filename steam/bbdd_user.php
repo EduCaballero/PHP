@@ -22,8 +22,9 @@ function existUser($email) {
 // Función que inserta un usuario en la bbdd (type: user)
 function insertUser($email, $pass, $name) {
     $con = conectar("dam_steam");
+    $passCif = password_hash($pass, PASSWORD_DEFAULT);
     $insert = "insert into user values 
-             ('$email', '$pass', '$name',  'user')";
+             ('$email', '$passCif', '$name',  'user')";
     if (mysqli_query($con, $insert)) {
         echo "<p>Usuario registrado </p>";
     } else {

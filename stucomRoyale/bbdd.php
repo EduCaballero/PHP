@@ -398,3 +398,298 @@ function selectAllCards() {
     desconectar($con);
     return $resultado;
 }
+
+//----------------------------------
+
+//-------
+
+
+
+
+
+function listarUsuarios() {
+    $con = conectar("royal");
+    $query = "select username from user where type = 0;";
+    $resultado = mysqli_query($con, $query);
+    desconectar($con);
+    return $resultado;
+}
+
+function datosCartas(){
+    $con = conectar("royal");
+    $query = "select * from card;";
+   
+    $resultado = mysqli_query($con, $query);
+    desconectar($con);
+    return $resultado;
+}
+
+function tieneCarta1($carta, $usu) {
+    $con = conectar("royal");
+    $query = "select user, card from deck where user='$usu' and card = '$carta'; ";
+    $resultado = mysqli_query($con, $query);
+    desconectar($con);
+    $num_rows = mysqli_num_rows($resultado);
+   
+    if ($num_rows == 0) {
+        return false;
+    } else { 
+        return true;
+    }
+}
+
+function insertarCarta1($carta, $usu){
+   
+    $con = conectar('royal');
+    $insert = "insert into deck values ('$usu','$carta','1');";
+    if (mysqli_query($con, $insert)) {
+        echo "<h1>carta insertada</h1>";
+        echo '<img src="img/Happy_Face.png" style="width:250px;height: 300px;"/>';
+        ?>
+       <a href="home_admin.php"><input class="boton" type="button" value="Home" ></a> 
+     <?php   
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+function existeCarta1($carta, $usuario){
+    $con = conectar('royal');
+    $insert = "update deck set level=level+1 where user = '$usuario' and card = '$carta';";
+    if (mysqli_query($con, $insert)) {
+        echo "<h1>carta subida de nivel</h1>";
+         echo '<img src="img/Happy_Face.png" style="width:250px;height: 300px;"/>';
+        ?>
+<a href="home_admin.php"><input class="boton" type="button" value="Home" ></a>
+<?php
+        
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+function darCarta($carta, $usu){
+    if (tieneCarta1($carta, $usu)== true){
+        existeCarta1($carta, $usu);
+    }else{
+        insertarCarta1($carta, $usu);
+    }
+}
+
+function arrayCarta(){
+     $con = conectar('royal');
+     $query = "select name from card; ";
+      $resultado = mysqli_query($con, $query);
+    desconectar($con);
+    
+    while ($fila = mysqli_fetch_array($resultado)) {
+        extract($fila);
+        $carta[] = $name;
+        
+    }
+    return $carta;
+    
+}
+
+function repe($carta, $usuario) {
+    $con = conectar("royal");
+    $query = "select user,card from deck where user='$usuario' and card = '$carta'; ";
+    $resultado = mysqli_query($con, $query);
+    desconectar($con);
+    //comprobaos si la consulta ha devuelto algun resultado
+    $num_rows = mysqli_num_rows($resultado);
+    //si el nº de flas es 0, no existe la carta
+    if ($num_rows == 0) {
+        return false;
+    } else { //este else no hace falta
+        return true;
+    }
+}
+
+function insertCard2($carta, $usuario){
+    $con = conectar('royal');
+    $insert = "insert into deck values ('$usuario','$carta','1');";
+    if (mysqli_query($con, $insert)) {
+        echo "";
+        
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+function levelUp($carta, $usuario){
+    $con = conectar('royal');
+    $insert = "update deck set level= level + 1 where user = '$usuario' and card = '$carta';";
+    if (mysqli_query($con, $insert)) {
+        echo "";
+        
+    } else {
+        echo mysqli_error($con);
+    }
+    desconectar($con);
+}
+
+
+function caja($cartas, $usuario){
+    $namber = rand(0, count($cartas)-1);
+    
+    $carta = $cartas[$namber];
+    ?><p>Te ha tocado <?php $carta ?></p><?php
+    if (repe($carta, $usuario)== true){
+        levelUp($carta, $usuario);
+    }else{
+        insertCard2($carta, $usuario);
+    }
+}
+
+function player1($nombre) {
+    $con = conectar("royal");
+    $select = "select card from deck where user='$nombre';";
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    return $resultado;
+}
+
+function VidaCarta($nombre) {
+    $con = conectar("royal");
+    $select = "select hitpoints from card where name='$nombre';";
+    $resultado = mysqli_query($con, $select);
+    $fila = mysqli_fetch_array($resultado);
+    extract($fila);
+    desconectar($con);
+    return $hitpoints;
+}
+
+function NivelCarta($nombre, $card) {
+    $con = conectar("royal");
+    $select = "select level from deck where user='$nombre' and card='$card';";
+    $resultado = mysqli_query($con, $select);
+    $fila = mysqli_fetch_array($resultado);
+    extract($fila);
+    desconectar($con);
+    return $level;
+}
+
+function TipoCarta($nombre) {
+    $con = conectar("royal");
+    $select = "select type from card where name='$nombre';";
+    $resultado = mysqli_query($con, $select);
+    $fila = mysqli_fetch_array($resultado);
+    extract($fila);
+    desconectar($con);
+    return $type;
+}
+
+function ElixirCarta($nombre) {
+    $con = conectar("royal");
+    $select = "select cost from card where name='$nombre';";
+    $resultado = mysqli_query($con, $select);
+    $fila = mysqli_fetch_array($resultado);
+    extract($fila);
+    desconectar($con);
+    return $cost;
+}
+
+function Wins($nombre){
+    $con = conectar("royal");
+    $update = "update wins = wins+1 from user where name='$nombre';";
+    if (mysqli_query($con, $update)) {
+        ?>
+        <h1><p>Ha ganado el jugador</p></h1>
+        <?php
+    } else {
+        echo mysqli_error($con);
+    }
+}
+
+function NumeroGanado($nombre){
+    $con = conectar("royal");
+    $select = "select win from user where name='$nombre';";
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+}
+
+function SubirNvUser($nombre) {
+    $con = conectar("royal");
+    $update = "update level = level+1 from user where name='$nombre';";
+    if (mysqli_query($con, $update)) {
+        ?>
+        <P>lEVEL UP</P>
+        <?php
+    } else {
+        echo mysqli_error($con);
+    }
+}
+
+/*function NewCardLevel($userName, $cardname){
+    $con = conectar("royal");
+    $select = "UPDATE deck SET level = level + 1 WHERE user = '$userName' AND card = '$cardname';";
+    // Ejecutamos la consulta y recogemos el resultado
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    // devolvemos el resultado
+    return $resultado;
+}*/
+
+/*function InsertNewCard($card, $userName)
+{
+    $con = conectar("royal");
+    $insert = "INSERT INTO deck VALUES('$userName', '$card', 1);";
+    if(mysqli_query($con, $insert))
+    {
+        desconectar($con);
+        return 1;
+    }
+    desconectar($con);
+    return 0;
+}*/
+
+/*function SelectAllCards() {
+    $con = conectar("royal");
+    $query = "select * from card;";
+    $resultado = mysqli_query($con, $query);
+    desconectar($con);
+    return $resultado;
+}*/
+
+/*function SelectNombresJugadores(){
+    $con = conectar("royal");
+    $query = "select username from user;";
+    $resultado = mysqli_query($con, $query);
+    desconectar($con);
+    return $resultado;
+}*/
+
+/*function selectJugadorBorrar($name) {
+    $con = conectar("royal");
+    $query = "delete from user where username='$name';";
+    if(mysqli_query($con, $query)){
+        echo "<h1>Carta Borrada.</h1>";
+        echo '<img src="img/Happy_Face.png" style="width:350px;height: 300px;"/>';
+        echo '<form method="" action="home_admin.php"> <button type="submit">Inicio</button> </form>';
+    }
+    else echo mysqli_error($con);
+    desconectar($con);
+}*/
+
+function selectTopPlayers(){
+     $con = conectar("royal");
+    $select = "select * from user order by level desc, wins desc limit 10";
+    $resultado = mysqli_query($con, $select);
+    desconectar($con);
+    return $resultado;
+}
+
+
+
+
+
+
+
+
+
+
+?>

@@ -17,7 +17,7 @@ if (isset($_SESSION["user"])) {
             echo '<h2>BIENVENIDO</h2>
                 <form method="" action="modificarPass.php"> <button type="submit">Modificar Contraseña</button> </form> 
                 <form method="" action="perfil.php"> <button type="submit">Perfil</button> </form> 
-                <form method="" action="batallaSelect.php"> <button type="submit">Ir a la Batalla</button> </form> 
+                <form method="" action="batalla.php"> <button type="submit">Ir a la Batalla</button> </form> 
                 <form method="" action="salir.php"> <button type="submit">Salir</button> </form> ';
             ?>
         </body>
